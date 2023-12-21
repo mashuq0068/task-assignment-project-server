@@ -31,16 +31,37 @@ async function run() {
      app.get('/tasks/:email' , async(req , res) => {
         const email = req.params.email
         const query = {email : email}
+        console.log(email)
         
         const result = await taskCollection.find(query).toArray()
         res.send(result)
      })
-     app.get('/tasks/:id' , async(req , res) => {
-        const id = req.params.id
-        const query = new ObjectId({_id : id})
-        const result = await taskCollection.findOne(query)
-        res.send(result)
-     })
+     app.get('/task/:id', async (req, res) => {
+        const id = req.params.id;
+        console.log(id)
+        const query = { _id: new ObjectId(id) };
+    
+        try {
+            const result = await taskCollection.findOne(query);
+            res.send(result);
+        } catch (error) {
+            console.error('Error fetching task:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+     app.delete('/task/:id', async (req, res) => {
+        const id = req.params.id;
+        console.log(id)
+        const query = { _id: new ObjectId(id) };
+    
+        try {
+            const result = await taskCollection.deleteOne(query);
+            res.send(result);
+        } catch (error) {
+            console.error('Error fetching task:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
      app.patch('/outGoing/:id' , async(req , res) => {
         const id = req.params.id
        
